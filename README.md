@@ -145,7 +145,7 @@ Visit the GitHub Pages link (add your link here after deploying)
 ![Home Page](screenshots/home.png)
 
 ### Pets Browse
-![Pets Page](screenshots/pets.png)
+![Pets Page](screenshots/pet.png)
 
 ### Pet Detail
 ![Pet Detail](screenshots/pet-detail.png)
