@@ -2,7 +2,12 @@
 
 A full-featured pet adoption and care platform built with **HTML, CSS, and JavaScript**. Users can browse, adopt, and buy pets, book grooming & vet services, manage listings, and more — all with a beautiful responsive UI featuring dark mode, animations, and a built-in chatbot.
 
-![KindHeart Paws](screenshots/home.png)
+![KindHeart Paws]()
+<p align="center">
+  <img src="images/logo.png" alt="KindHeart Paws Logo" width="120">
+</p>
+
+# KindHeart Paws 🐾
 
 ---
 
