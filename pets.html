@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pets — KindHeart Paws</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header></header>
+
+<section class="hero" style="padding:50px 0">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin:0">
+      <p class="eyebrow">Find your companion</p>
+      <h1>Browse <span class="gradient-text">Pets</span></h1>
+      <p>Filter by type, breed, or price to find the perfect match.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <!-- Filters -->
+    <div class="filters reveal">
+      <input type="text" class="search" id="searchBox" placeholder="🔎 Search by name or breed…" oninput="renderPets()">
+      <select id="typeFilter" onchange="renderPets()">
+        <option value="">All Types</option>
+        <option>Dog</option><option>Cat</option><option>Bird</option><option>Fish</option><option>Rabbit</option>
+      </select>
+      <select id="sortFilter" onchange="renderPets()">
+        <option value="">Sort By</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+        <option value="name">Name A-Z</option>
+      </select>
+      <label style="display:flex;align-items:center;gap:6px;font-weight:600;font-size:.9rem;white-space:nowrap">
+        <input type="checkbox" id="freeOnly" onchange="renderPets()"> Free Adoption only
+      </label>
+    </div>
+
+    <div class="pet-grid" id="petGrid"></div>
+    <div id="emptyState" class="empty" style="display:none">No pets match your filters. Try adjusting them.</div>
+  </div>
+</section>
+
+<footer></footer>
+
+<!-- Cart Drawer -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <span>🛒 Your Cart</span>
+    <button class="modal-close" onclick="closeCart()" style="position:static;font-size:1.5rem;background:none;border:none;cursor:pointer">×</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot" id="cartFoot">
+    <div class="cart-total"><span>Total</span><span class="amt" id="cartTotalAmt">₹0</span></div>
+    <button class="btn btn-primary checkout-btn" onclick="openCheckout()">Checkout</button>
+  </div>
+</div>
+<script src="js/script.js"></script>
+<script>
+buildNav("pets.html");
+buildFooter();
+
+function renderPets(){
+  let pets=getPets();
+  const q=document.getElementById("searchBox").value.toLowerCase();
+  const type=document.getElementById("typeFilter").value;
+  const sort=document.getElementById("sortFilter").value;
+  const freeOnly=document.getElementById("freeOnly").checked;
+
+  if(q) pets=pets.filter(p=>(p.name+" "+p.breed).toLowerCase().includes(q));
+  if(type) pets=pets.filter(p=>p.type===type);
+  if(freeOnly) pets=pets.filter(p=>p.price===0);
+  if(sort==="low") pets.sort((a,b)=>a.price-b.price);
+  else if(sort==="high") pets.sort((a,b)=>b.price-a.price);
+  else if(sort==="name") pets.sort((a,b)=>a.name.localeCompare(b.name));
+
+  const grid=document.getElementById("petGrid");
+  const empty=document.getElementById("emptyState");
+  if(pets.length===0){grid.innerHTML="";empty.style.display="block";return;}
+  empty.style.display="none";
+  grid.innerHTML=pets.map(petCard).join("");
+}
+renderPets();
+</script>
+
+<!-- Chatbot Widget -->
+<button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbot()" title="Chat with PawBot">🐾<span class="badge-dot"></span></button>
+<div class="chatbot-window" id="chatbotWindow">
+  <div class="chatbot-head">
+    <div class="avatar">🐾</div>
+    <div class="info">
+      <h4>PawBot</h4>
+      <span class="status">Online • Typically replies instantly</span>
+    </div>
+    <button class="close-btn" onclick="toggleChatbot()">×</button>
+  </div>
+  <div class="chatbot-body" id="chatbotBody"></div>
+  <div class="chatbot-input">
+    <input type="text" id="chatbotInput" placeholder="Ask me anything about pets..." autocomplete="off">
+    <button onclick="sendChatMessage()">➤</button>
+  </div>
+</div>
+
+</body>
+</html>

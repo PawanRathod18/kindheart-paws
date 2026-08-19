@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+backend/model/disease_model.h5
+backend/model/*.h5
+backend/model/*.keras
+backend/static/uploads/*
+backend/dataset/*
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.log

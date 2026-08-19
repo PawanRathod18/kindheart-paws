@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — KindHeart Paws</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header></header>
+
+<!-- Admin Login Gate -->
+<div id="adminGate" class="admin-gate" style="display:none">
+  <div class="ico">🔐</div>
+  <h2>Admin Access</h2>
+  <p>Enter the admin password to manage the platform.</p>
+  <div id="gateAlert"></div>
+  <form id="gateForm">
+    <div class="form-group">
+      <label>Admin Password</label>
+      <input type="password" id="gatePass" placeholder="Enter password" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Enter Dashboard</button>
+  </form>
+  
+</div>
+
+<!-- Admin Dashboard -->
+<div id="adminPanel" style="display:none;padding:40px 0">
+  <div class="wrap">
+    <!-- Stats -->
+    <div class="admin-stats reveal">
+      <div class="admin-stat">
+        <div class="a-ico" style="background:#fde">🐾</div>
+        <div class="a-info"><div class="num" id="statPets">0</div><div class="lbl">Total Pets</div></div>
+      </div>
+      <div class="admin-stat">
+        <div class="a-ico" style="background:#e0f2fe">👥</div>
+        <div class="a-info"><div class="num" id="statUsers">0</div><div class="lbl">Registered Users</div></div>
+      </div>
+      <div class="admin-stat">
+        <div class="a-ico" style="background:#dcfce7">🛒</div>
+        <div class="a-info"><div class="num" id="statCart">0</div><div class="lbl">Cart Items</div></div>
+      </div>
+      <div class="admin-stat">
+        <div class="a-ico" style="background:#fef3c7">❤</div>
+        <div class="a-info"><div class="num" id="statWish">0</div><div class="lbl">Wishlisted</div></div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('pets')">🐾 Manage Pets</button>
+      <button class="admin-tab" onclick="switchTab('users')">👥 Manage Users</button>
+      <button class="admin-tab" onclick="switchTab('orders')">📦 Orders</button>
+    </div>
+
+    <!-- Pets Tab -->
+    <div id="tab-pets">
+      <div class="admin-table-wrap">
+        <div class="admin-table-head">
+          <h3>📋 All Pet Listings</h3>
+          <button class="btn btn-primary" style="font-size:.85rem;padding:8px 16px" onclick="location.href='sell.html'">+ Add Pet</button>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr><th>Pet</th><th>Type</th><th>Breed</th><th>Price</th><th>Seller</th><th>Action</th></tr>
+          </thead>
+          <tbody id="petsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Users Tab -->
+    <div id="tab-users" style="display:none">
+      <div class="admin-table-wrap">
+        <div class="admin-table-head">
+          <h3>👥 Registered Users</h3>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr><th>Name</th><th>Email</th><th>Role</th><th>Listed Pets</th></tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Orders Tab -->
+    <div id="tab-orders" style="display:none">
+      <div class="admin-table-wrap">
+        <div class="admin-table-head">
+          <h3>📦 Recent Orders</h3>
+        </div>
+        <div id="ordersContent" style="padding:30px 24px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer></footer>
+
+<!-- Cart Drawer -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <span>🛒 Your Cart</span>
+    <button class="modal-close" onclick="closeCart()" style="position:static;font-size:1.5rem;background:none;border:none;cursor:pointer">×</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot" id="cartFoot">
+    <div class="cart-total"><span>Total</span><span class="amt" id="cartTotalAmt">₹0</span></div>
+    <button class="btn btn-primary checkout-btn" onclick="openCheckout()">Checkout</button>
+  </div>
+</div>
+<script src="js/script.js"></script>
+<script>
+buildNav("admin.html");
+buildFooter();
+
+const ADMIN_PASSWORD = "Pawan@2003";
+
+// check if already authenticated this session
+let isAdmin = sessionStorage.getItem("ph_admin") === "1";
+
+function showGate(){
+  document.getElementById("adminGate").style.display = "block";
+  document.getElementById("adminPanel").style.display = "none";
+}
+function showPanel(){
+  document.getElementById("adminGate").style.display = "none";
+  document.getElementById("adminPanel").style.display = "block";
+  loadStats();
+  loadPets();
+  loadUsers();
+  loadOrders();
+  setTimeout(initReveal, 60);
+}
+
+if(isAdmin) showPanel(); else showGate();
+
+document.getElementById("gateForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  const pass = document.getElementById("gatePass").value;
+  if(pass === ADMIN_PASSWORD){
+    sessionStorage.setItem("ph_admin","1");
+    isAdmin = true;
+    showPanel();
+  } else {
+    document.getElementById("gateAlert").innerHTML = '<div class="alert err">Wrong password. Try again.</div>';
+  }
+});
+
+// ---- Stats ----
+function loadStats(){
+  document.getElementById("statPets").textContent = getPets().length;
+  document.getElementById("statUsers").textContent = getUsers().length;
+  document.getElementById("statCart").textContent = cartCount();
+  document.getElementById("statWish").textContent = getWishlist().length;
+}
+
+// ---- Pets Table ----
+function loadPets(){
+  const pets = getPets();
+  const body = document.getElementById("petsTableBody");
+  if(pets.length === 0){
+    body.innerHTML = '<tr><td colspan="6" class="empty-row">No pets listed yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = pets.map(p => `
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px">
+          ${p.img ? `<img src="${p.img}" class="t-pic" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="t-emoji" style="display:none;font-size:1.4rem">${petEmoji(p.type)}</span>` : `<span class="t-emoji">${petEmoji(p.type)}</span>`}
+          <strong>${p.name}</strong>
+        </div>
+      </td>
+      <td>${p.type}</td>
+      <td>${p.breed}</td>
+      <td>${p.price === 0 ? '<span class="t-free">Free</span>' : '<span class="t-price">₹'+p.price.toLocaleString("en-IN")+'</span>'}</td>
+      <td>${p.seller || "KindHeart Paws"}</td>
+      <td>
+        <a href="pet.html?id=${p.id}" style="color:var(--secondary);font-weight:600;font-size:.82rem;margin-right:8px">View</a>
+        <button class="del-btn" onclick="adminDeletePet(${p.id})">Delete</button>
+      </td>
+    </tr>`).join("");
+}
+
+function adminDeletePet(id){
+  if(!confirm("Delete this pet listing? This cannot be undone.")) return;
+  const pets = getPets().filter(p => p.id !== id);
+  setPets(pets);
+  loadStats();
+  loadPets();
+  toast("Pet listing deleted.");
+}
+
+// ---- Users Table ----
+function loadUsers(){
+  const users = getUsers();
+  const pets = getPets();
+  const body = document.getElementById("usersTableBody");
+  if(users.length === 0){
+    body.innerHTML = '<tr><td colspan="4" class="empty-row">No registered users yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = users.map(u => {
+    const listed = pets.filter(p => p.sellerEmail === u.email).length;
+    const isAdminUser = u.email === "admin@pawshearts.in";
+    return `
+    <tr>
+      <td><strong>${u.name}</strong></td>
+      <td>${u.email}</td>
+      <td><span class="role-badge ${isAdminUser?'admin':'user'}">${isAdminUser?'Admin':'User'}</span></td>
+      <td>${listed}</td>
+    </tr>`;
+  }).join("");
+}
+
+// ---- Orders Tab ----
+function loadOrders(){
+  const cart = getCart();
+  const content = document.getElementById("ordersContent");
+  if(cart.length === 0){
+    content.innerHTML = '<div class="empty-row">No active orders in cart. Orders will appear here when users add items.</div>';
+    return;
+  }
+  const total = cartTotal();
+  content.innerHTML = `
+    <p style="margin-bottom:16px;color:var(--muted);font-size:.9rem">Currently ${cart.length} item(s) in the active cart:</p>
+    ${cart.map(i => `
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f3f4f6">
+        <span>${i.emoji||""} ${i.name} <span style="color:var(--muted);font-size:.8rem">(${i.type})</span></span>
+        <strong>${i.price === 0 ? "Free" : "₹"+i.price.toLocaleString("en-IN")}</strong>
+      </div>
+    `).join("")}
+    <div style="display:flex;justify-content:space-between;margin-top:16px;font-size:1.2rem;font-weight:800;color:var(--primary)">
+      <span>Cart Total</span><span>₹${total.toLocaleString("en-IN")}</span>
+    </div>`;
+}
+
+// ---- Tabs ----
+function switchTab(tab){
+  document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
+  event.target.classList.add("active");
+  document.getElementById("tab-pets").style.display = tab === "pets" ? "block" : "none";
+  document.getElementById("tab-users").style.display = tab === "users" ? "block" : "none";
+  document.getElementById("tab-orders").style.display = tab === "orders" ? "block" : "none";
+}
+</script>
+
+<!-- Chatbot Widget -->
+<button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbot()" title="Chat with PawBot">🐾<span class="badge-dot"></span></button>
+<div class="chatbot-window" id="chatbotWindow">
+  <div class="chatbot-head">
+    <div class="avatar">🐾</div>
+    <div class="info">
+      <h4>PawBot</h4>
+      <span class="status">Online • Typically replies instantly</span>
+    </div>
+    <button class="close-btn" onclick="toggleChatbot()">×</button>
+  </div>
+  <div class="chatbot-body" id="chatbotBody"></div>
+  <div class="chatbot-input">
+    <input type="text" id="chatbotInput" placeholder="Ask me anything about pets..." autocomplete="off">
+    <button onclick="sendChatMessage()">➤</button>
+  </div>
+</div>
+
+</body>
+</html>

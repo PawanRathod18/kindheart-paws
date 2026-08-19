@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login / Sign Up — KindHeart Paws</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header></header>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h2 id="formTitle">Welcome Back 🐾</h2>
+    <p class="sub" id="formSub">Login to manage your listings and enquiries.</p>
+
+    <div id="alertBox"></div>
+
+    <form id="authForm">
+      <div id="nameField" class="form-group" style="display:none">
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••" required>
+      </div>
+      <div id="confirmField" class="form-group" style="display:none">
+        <label>Confirm Password</label>
+        <input type="password" id="confirm" placeholder="••••••••">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Login</button>
+    </form>
+
+    <p class="auth-switch" id="switchText">
+      New here? <a href="#" onclick="toggleMode('signup')">Create an account</a>
+    </p>
+  </div>
+</div>
+
+<footer></footer>
+
+<!-- Cart Drawer -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <span>🛒 Your Cart</span>
+    <button class="modal-close" onclick="closeCart()" style="position:static;font-size:1.5rem;background:none;border:none;cursor:pointer">×</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot" id="cartFoot">
+    <div class="cart-total"><span>Total</span><span class="amt" id="cartTotalAmt">₹0</span></div>
+    <button class="btn btn-primary checkout-btn" onclick="openCheckout()">Checkout</button>
+  </div>
+</div>
+<script src="js/script.js"></script>
+<script>
+buildNav("");
+buildFooter();
+
+let mode = new URLSearchParams(location.search).get("mode") || "login";
+
+function toggleMode(m){
+  mode = m;
+  const t = document.getElementById("formTitle");
+  const s = document.getElementById("formSub");
+  const btn = document.getElementById("submitBtn");
+  const sw = document.getElementById("switchText");
+  const nameF = document.getElementById("nameField");
+  const confF = document.getElementById("confirmField");
+  if(m==="signup"){
+    t.textContent="Create Account 🐾";
+    s.textContent="Join us to adopt, buy, sell and book services.";
+    btn.textContent="Sign Up";
+    nameF.style.display="block";
+    confF.style.display="block";
+    document.getElementById("name").required=true;
+    document.getElementById("confirm").required=true;
+    sw.innerHTML=`Already have an account? <a href="#" onclick="toggleMode('login')">Login</a>`;
+  } else {
+    t.textContent="Welcome Back 🐾";
+    s.textContent="Login to manage your listings and enquiries.";
+    btn.textContent="Login";
+    nameF.style.display="none";
+    confF.style.display="none";
+    document.getElementById("name").required=false;
+    document.getElementById("confirm").required=false;
+    sw.innerHTML=`New here? <a href="#" onclick="toggleMode('signup')">Create an account</a>`;
+  }
+}
+toggleMode(mode);
+
+function showMsg(msg,type){
+  document.getElementById("alertBox").innerHTML=`<div class="alert ${type}">${msg}</div>`;
+}
+
+document.getElementById("authForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value;
+  if(mode==="signup"){
+    const name=document.getElementById("name").value.trim();
+    const confirm=document.getElementById("confirm").value;
+    if(password!==confirm){showMsg("Passwords do not match.","err");return;}
+    if(password.length<6){showMsg("Password must be at least 6 characters.","err");return;}
+    let users=getUsers();
+    if(users.some(u=>u.email===email)){showMsg("An account with this email already exists.","err");return;}
+    const user={name,email,password};
+    users.push(user);
+    setUsers(users);
+    setCurrentUser(user);
+    toast("Account created! Redirecting…");
+    setTimeout(()=>location.href="index.html",1200);
+  } else {
+    const users=getUsers();
+    const found=users.find(u=>u.email===email && u.password===password);
+    if(!found){showMsg("Invalid email or password.","err");return;}
+    setCurrentUser(found);
+    toast("Login successful! Redirecting…");
+    setTimeout(()=>location.href="index.html",1000);
+  }
+});
+</script>
+
+<!-- Chatbot Widget -->
+<button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbot()" title="Chat with PawBot">🐾<span class="badge-dot"></span></button>
+<div class="chatbot-window" id="chatbotWindow">
+  <div class="chatbot-head">
+    <div class="avatar">🐾</div>
+    <div class="info">
+      <h4>PawBot</h4>
+      <span class="status">Online • Typically replies instantly</span>
+    </div>
+    <button class="close-btn" onclick="toggleChatbot()">×</button>
+  </div>
+  <div class="chatbot-body" id="chatbotBody"></div>
+  <div class="chatbot-input">
+    <input type="text" id="chatbotInput" placeholder="Ask me anything about pets..." autocomplete="off">
+    <button onclick="sendChatMessage()">➤</button>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pet Details — KindHeart Paws</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header></header>
+
+<section style="padding:40px 0;min-height:60vh">
+  <div class="wrap">
+    <a href="pets.html" class="pet-back">← Back to Pets</a>
+    <div id="petDetailContent"></div>
+  </div>
+</section>
+
+<footer></footer>
+
+<!-- Cart Drawer -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <span>🛒 Your Cart</span>
+    <button class="modal-close" onclick="closeCart()" style="position:static;font-size:1.5rem;background:none;border:none;cursor:pointer">×</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot" id="cartFoot">
+    <div class="cart-total"><span>Total</span><span class="amt" id="cartTotalAmt">₹0</span></div>
+    <button class="btn btn-primary checkout-btn" onclick="openCheckout()">Checkout</button>
+  </div>
+</div>
+<script src="js/script.js"></script>
+<script>
+buildNav("");
+buildFooter();
+
+const params = new URLSearchParams(location.search);
+const petId = Number(params.get("id"));
+const pet = getPets().find(p => p.id === petId);
+
+if(!pet){
+  document.getElementById("petDetailContent").innerHTML = `
+    <div class="empty" style="padding:60px;text-align:center">
+      <p style="font-size:1.2rem;color:var(--muted)">😔 Pet not found.</p>
+      <a href="pets.html" class="btn btn-primary" style="margin-top:16px">Browse All Pets</a>
+    </div>`;
+} else {
+  const wish = getWishlist().includes(pet.id);
+  document.getElementById("petDetailContent").innerHTML = `
+    <div class="pet-detail-grid reveal">
+      <div class="pet-detail-img">
+        <span class="tag ${pet.price===0?"":"sell"}">${pet.price===0?"Adopt":"For Sale"}</span>
+        <img src="${pet.img}" alt="${pet.name}" onerror="this.src='https://placehold.co/600x440/ff7a59/fff?text=${pet.name}'">
+      </div>
+      <div class="pet-detail-info">
+        <h1>${pet.name}</h1>
+        <p class="breed-line">${pet.breed} • ${pet.type}</p>
+        <div class="price-big ${pet.price===0?"free":""}">${pet.price===0?"Free Adoption":("₹"+pet.price.toLocaleString("en-IN"))}</div>
+
+        <div class="pet-spec-grid">
+          <div class="spec-box"><div class="lbl">Age</div><div class="val">${pet.age}</div></div>
+          <div class="spec-box"><div class="lbl">Gender</div><div class="val">${pet.gender}</div></div>
+          <div class="spec-box"><div class="lbl">Type</div><div class="val">${pet.type}</div></div>
+          <div class="spec-box"><div class="lbl">Breed</div><div class="val">${pet.breed}</div></div>
+        </div>
+
+        <div class="pet-tags-row">
+          ${(pet.tags||[]).map(t=>`<span class="chip">${t}</span>`).join("")}
+        </div>
+
+        <div class="pet-desc">
+          ${pet.desc || (pet.name + " is a wonderful " + pet.breed + " " + pet.type.toLowerCase() + " looking for a loving forever home. " + pet.name + " is " + pet.age + " old and has a " + pet.gender.toLowerCase() + " temperament. " + (pet.tags||[]).includes("Vaccinated") ? "Fully vaccinated and ready to go!" : "Healthy and full of energy!")}
+        </div>
+
+        <div class="modal-contact" style="background:#f9fafb;padding:14px;border-radius:12px;font-size:.9rem;color:#444;margin-bottom:20px">
+          📞 Seller: ${pet.seller || "KindHeart Paws team"}<br>
+          📍 ${pet.location || "Bengaluru, India"}
+        </div>
+
+        <div class="pet-detail-actions">
+          <button class="btn btn-primary" onclick='addPetToCart(${JSON.stringify(pet).replace(/'/g,"&#39;")})'>🛒 Add to Cart</button>
+          <button class="btn btn-outline" onclick="enquire(${pet.id})">📞 Enquire Now</button>
+          <button class="btn btn-outline heart ${wish?"on":""}" onclick="toggleWish(${pet.id});location.reload()">❤ ${wish?"In Wishlist":"Add to Wishlist"}</button>
+        </div>
+      </div>
+    </div>`;
+  document.title = pet.name + " — KindHeart Paws";
+}
+setTimeout(initReveal, 60);
+</script>
+
+<!-- Chatbot Widget -->
+<button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbot()" title="Chat with PawBot">🐾<span class="badge-dot"></span></button>
+<div class="chatbot-window" id="chatbotWindow">
+  <div class="chatbot-head">
+    <div class="avatar">🐾</div>
+    <div class="info">
+      <h4>PawBot</h4>
+      <span class="status">Online • Typically replies instantly</span>
+    </div>
+    <button class="close-btn" onclick="toggleChatbot()">×</button>
+  </div>
+  <div class="chatbot-body" id="chatbotBody"></div>
+  <div class="chatbot-input">
+    <input type="text" id="chatbotInput" placeholder="Ask me anything about pets..." autocomplete="off">
+    <button onclick="sendChatMessage()">➤</button>
+  </div>
+</div>
+
+</body>
+</html>

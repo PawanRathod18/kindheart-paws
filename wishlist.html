@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wishlist — KindHeart Paws</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header></header>
+
+<section class="hero" style="padding:50px 0">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin:0">
+      <p class="eyebrow">Your favorites</p>
+      <h1>My <span class="gradient-text">Wishlist</span></h1>
+      <p>Pets you've saved — come back to them anytime.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="pet-grid" id="wishGrid"></div>
+    <div id="wishEmpty" class="empty" style="display:none;padding:60px;text-align:center">
+      <span style="font-size:3rem;display:block;margin-bottom:12px">💔</span>
+      Your wishlist is empty. Browse pets and tap the ❤ to save them here!
+      <br><br><a href="pets.html" class="btn btn-primary">Browse Pets</a>
+    </div>
+  </div>
+</section>
+
+<footer></footer>
+
+<!-- Cart Drawer -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <span>🛒 Your Cart</span>
+    <button class="modal-close" onclick="closeCart()" style="position:static;font-size:1.5rem;background:none;border:none;cursor:pointer">×</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot" id="cartFoot">
+    <div class="cart-total"><span>Total</span><span class="amt" id="cartTotalAmt">₹0</span></div>
+    <button class="btn btn-primary checkout-btn" onclick="openCheckout()">Checkout</button>
+  </div>
+</div>
+<script src="js/script.js"></script>
+<script>
+buildNav("wishlist.html");
+buildFooter();
+
+function renderWishlist(){
+  const wish = getWishlist();
+  const pets = getPets().filter(p => wish.includes(p.id));
+  const grid = document.getElementById("wishGrid");
+  const empty = document.getElementById("wishEmpty");
+  if(pets.length === 0){
+    grid.innerHTML = "";
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+  grid.innerHTML = pets.map(petCard).join("");
+  // add reveal stagger
+  for(let i=0;i<grid.children.length;i++){
+    grid.children[i].classList.add("reveal","delay-"+((i%4)+1));
+  }
+  initReveal();
+}
+renderWishlist();
+</script>
+
+<!-- Chatbot Widget -->
+<button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbot()" title="Chat with PawBot">🐾<span class="badge-dot"></span></button>
+<div class="chatbot-window" id="chatbotWindow">
+  <div class="chatbot-head">
+    <div class="avatar">🐾</div>
+    <div class="info">
+      <h4>PawBot</h4>
+      <span class="status">Online • Typically replies instantly</span>
+    </div>
+    <button class="close-btn" onclick="toggleChatbot()">×</button>
+  </div>
+  <div class="chatbot-body" id="chatbotBody"></div>
+  <div class="chatbot-input">
+    <input type="text" id="chatbotInput" placeholder="Ask me anything about pets..." autocomplete="off">
+    <button onclick="sendChatMessage()">➤</button>
+  </div>
+</div>
+
+</body>
+</html>

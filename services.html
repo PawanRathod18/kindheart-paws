@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services — KindHeart Paws</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header></header>
+
+<section class="hero" style="padding:50px 0">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin:0">
+      <p class="eyebrow">Premium pet care</p>
+      <h1>Our <span class="gradient-text">Services</span></h1>
+      <p>From grooming to vet care, we keep your furry friends happy and healthy.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="svc-grid">
+      <div class="svc-card reveal delay-1">
+        <div class="ico">✂️</div>
+        <h3>Grooming & Spa</h3>
+        <p>Full grooming package — bath, haircut, nail trim, ear cleaning and a relaxing pet massage.</p>
+        <div class="svc-price">From ₹499</div>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="bookService('Grooming & Spa')">Book Now</button>
+      </div>
+      <div class="svc-card reveal delay-2">
+        <div class="ico">🎓</div>
+        <h3>Training Classes</h3>
+        <p>Obedience, potty training and behavior correction by certified canine trainers.</p>
+        <div class="svc-price">From ₹1499</div>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="bookService('Training Classes')">Book Now</button>
+      </div>
+      <div class="svc-card reveal delay-3">
+        <div class="ico">🏠</div>
+        <h3>Pet Boarding</h3>
+        <p>Cozy, safe overnight stays with 24/7 CCTV monitoring and personalized care.</p>
+        <div class="svc-price">From ₹699/night</div>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="bookService('Pet Boarding')">Book Now</button>
+      </div>
+      <div class="svc-card reveal delay-4">
+        <div class="ico">🩺</div>
+        <h3>Veterinary Care</h3>
+        <p>Routine checkups, vaccinations, dental care and emergency consultations.</p>
+        <div class="svc-price">From ₹399</div>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="bookService('Veterinary Care')">Book Now</button>
+      </div>
+      <div class="svc-card reveal delay-1">
+        <div class="ico">🚿</div>
+        <h3>Pet Wash</h3>
+        <p>Quick wash and blow-dry with hypoallergenic shampoos suited for sensitive skin.</p>
+        <div class="svc-price">From ₹299</div>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="bookService('Pet Wash')">Book Now</button>
+      </div>
+      <div class="svc-card reveal delay-2">
+        <div class="ico">🚶</div>
+        <h3>Dog Walking</h3>
+        <p>Regular walks and exercise sessions by trusted, background-checked walkers.</p>
+        <div class="svc-price">From ₹199/walk</div>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="bookService('Dog Walking')">Book Now</button>
+      </div>
+      <div class="svc-card reveal delay-3">
+        <div class="ico">🍖</div>
+        <h3>Pet Food & Supplies</h3>
+        <p>Premium food, toys, beds and accessories delivered to your doorstep.</p>
+        <div class="svc-price">From ₹250</div>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="bookService('Pet Food & Supplies')">Order Now</button>
+      </div>
+      <div class="svc-card reveal delay-4">
+        <div class="ico">🚚</div>
+        <h3>Pet Relocation</h3>
+        <p>Safe and stress-free pet transport across cities with proper documentation.</p>
+        <div class="svc-price">From ₹2999</div>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="bookService('Pet Relocation')">Book Now</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Booking modal -->
+<div class="modal-overlay" id="svcModal">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('svcModal').classList.remove('show')">×</button>
+    <h3 id="svcTitle">Book Service</h3>
+    <p class="mp">Fill in your details and we'll confirm your booking.</p>
+    <form id="svcForm">
+      <div class="form-group"><label>Your Name</label><input type="text" id="svcName" required></div>
+      <div class="form-group"><label>Phone</label><input type="tel" id="svcPhone" required></div>
+      <div class="form-group"><label>Pet Type</label>
+        <select id="svcPet"><option>Dog</option><option>Cat</option><option>Bird</option><option>Rabbit</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label>Preferred Date</label><input type="date" id="svcDate" required></div>
+      <div class="form-group"><label>Notes</label><textarea id="svcNotes" placeholder="Any special requirements?"></textarea></div>
+      <button type="submit" class="btn btn-primary btn-block">Confirm Booking</button>
+    </form>
+  </div>
+</div>
+
+<footer></footer>
+
+<!-- Cart Drawer -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <span>🛒 Your Cart</span>
+    <button class="modal-close" onclick="closeCart()" style="position:static;font-size:1.5rem;background:none;border:none;cursor:pointer">×</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot" id="cartFoot">
+    <div class="cart-total"><span>Total</span><span class="amt" id="cartTotalAmt">₹0</span></div>
+    <button class="btn btn-primary checkout-btn" onclick="openCheckout()">Checkout</button>
+  </div>
+</div>
+<script src="js/script.js"></script>
+<script>
+buildNav("services.html");
+buildFooter();
+
+let currentService="";
+const SVC_PRICES={"Grooming & Spa":499,"Training Classes":1499,"Pet Boarding":699,"Veterinary Care":399,"Pet Wash":299,"Dog Walking":199,"Pet Food & Supplies":250,"Pet Relocation":2999};
+const SVC_EMOJI={"Grooming & Spa":"✂️","Training Classes":"🎓","Pet Boarding":"🏠","Veterinary Care":"🩺","Pet Wash":"🚿","Dog Walking":"🚶","Pet Food & Supplies":"🍖","Pet Relocation":"🚚"};
+function bookService(name){
+  const u=currentUser();
+  if(!u){toast("Please login to book a service");setTimeout(()=>location.href="login.html",1200);return}
+  document.getElementById("svcName").value=u?u.name:"";
+  currentService=name;
+  document.getElementById("svcTitle").textContent="Book: "+name;
+  document.getElementById("svcModal").classList.add("show");
+}
+document.getElementById("svcForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  const u=currentUser();
+  if(!u){toast("Please login to confirm your booking");setTimeout(()=>location.href="login.html",1200);return;}
+  const pet=document.getElementById("svcPet").value;
+  const date=document.getElementById("svcDate").value;
+  addToCart({
+    uid:"svc-"+currentService+"-"+Date.now(),
+    name:currentService,
+    type:"Service • "+pet+" • "+date,
+    price:SVC_PRICES[currentService]||499,
+    emoji:SVC_EMOJI[currentService]||"🐾",
+    img:"",
+    category:"Service"
+  });
+  document.getElementById("svcModal").classList.remove("show");
+  this.reset();
+});
+</script>
+
+<!-- Chatbot Widget -->
+<button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbot()" title="Chat with PawBot">🐾<span class="badge-dot"></span></button>
+<div class="chatbot-window" id="chatbotWindow">
+  <div class="chatbot-head">
+    <div class="avatar">🐾</div>
+    <div class="info">
+      <h4>PawBot</h4>
+      <span class="status">Online • Typically replies instantly</span>
+    </div>
+    <button class="close-btn" onclick="toggleChatbot()">×</button>
+  </div>
+  <div class="chatbot-body" id="chatbotBody"></div>
+  <div class="chatbot-input">
+    <input type="text" id="chatbotInput" placeholder="Ask me anything about pets..." autocomplete="off">
+    <button onclick="sendChatMessage()">➤</button>
+  </div>
+</div>
+
+</body>
+</html>

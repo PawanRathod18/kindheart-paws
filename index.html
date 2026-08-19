@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KindHeart Paws — Adopt, Buy & Care for Pets</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <header></header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <!-- Floating emojis layer -->
+    <div class="hero-floats" id="heroFloats"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">🐾 Find your forever friend</p>
+        <h1>Where Every Pet Finds a <span>Loving Home</span></h1>
+        <p>Browse hundreds of pets available for adoption and sale, plus grooming, training, and vet care services — all
+          on one platform built with love.</p>
+        <div class="hero-cta">
+          <a href="pets.html" class="btn btn-primary">Browse Pets →</a>
+          <a href="sell.html" class="btn btn-outline">List a Pet</a>
+        </div>
+      </div>
+      <div class="hero-img">
+        <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800" alt="Happy puppy"
+          onerror="this.src='https://placehold.co/600x420/ff7a59/fff?text=Happy+Pets'">
+        <div class="float-card top"><span class="ico">🐕</span> 500+ Pets Adopted</div>
+        <div class="float-card bot"><span class="ico">❤</span> 5★ Care Services</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PETS -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Featured</p>
+        <h2>Meet Our <span class="gradient-text">Pets</span></h2>
+        <p>A few of the adorable companions waiting for a home just like yours.</p>
+      </div>
+      <div class="pet-grid" id="featuredGrid"></div>
+      <div style="text-align:center;margin-top:34px" class="reveal delay-2">
+        <a href="pets.html" class="btn btn-primary">View All Pets</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES TEASER -->
+  <section style="background:linear-gradient(135deg,#fff7f3,#eef9f4)">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">What we offer</p>
+        <h2>More Than Just Adoption</h2>
+        <p>From spa days to training sessions, we care for your pet at every stage of life.</p>
+      </div>
+      <div class="svc-grid">
+        <div class="svc-card reveal delay-1">
+          <div class="ico">✂️</div>
+          <h3>Grooming</h3>
+          <p>Baths, haircuts, nail trims and more by certified groomers.</p>
+          <div class="svc-price">From ₹499</div>
+        </div>
+        <div class="svc-card reveal delay-2">
+          <div class="ico">🎓</div>
+          <h3>Training</h3>
+          <p>Obedience and behavior training for pups and adult dogs.</p>
+          <div class="svc-price">From ₹1499</div>
+        </div>
+        <div class="svc-card reveal delay-3">
+          <div class="ico">🏠</div>
+          <h3>Boarding</h3>
+          <p>Safe, cozy stays while you're away. CCTV monitored.</p>
+          <div class="svc-price">From ₹699/night</div>
+        </div>
+        <div class="svc-card reveal delay-4">
+          <div class="ico">🩺</div>
+          <h3>Vet Care</h3>
+          <p>Health checkups, vaccinations and emergency support.</p>
+          <div class="svc-price">From ₹399</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:34px" class="reveal delay-2">
+        <a href="services.html" class="btn btn-outline">Explore Services</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Simple steps</p>
+        <h2>How It Works</h2>
+      </div>
+      <div class="svc-grid">
+        <div class="svc-card reveal delay-1">
+          <div class="ico">🔍</div>
+          <h3>1. Browse</h3>
+          <p>Explore pets and services that match what you're looking for.</p>
+        </div>
+        <div class="svc-card reveal delay-2">
+          <div class="ico">📝</div>
+          <h3>2. Enquire</h3>
+          <p>Click on a pet or service and send your enquiry in seconds.</p>
+        </div>
+        <div class="svc-card reveal delay-3">
+          <div class="ico">🤝</div>
+          <h3>3. Connect</h3>
+          <p>The seller or service provider reaches out to you directly.</p>
+        </div>
+        <div class="svc-card reveal delay-4">
+          <div class="ico">🏡</div>
+          <h3>4. Bring Home</h3>
+          <p>Complete the adoption or booking and welcome your pet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer></footer>
+
+  <!-- Cart Drawer -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-head">
+      <span>🛒 Your Cart</span>
+      <button class="modal-close" onclick="closeCart()"
+        style="position:static;font-size:1.5rem;background:none;border:none;cursor:pointer">×</button>
+    </div>
+    <div class="cart-body" id="cartBody"></div>
+    <div class="cart-foot" id="cartFoot">
+      <div class="cart-total"><span>Total</span><span class="amt" id="cartTotalAmt">₹0</span></div>
+      <button class="btn btn-primary checkout-btn" onclick="openCheckout()">Checkout</button>
+    </div>
+  </div>
+  <script src="js/script.js"></script>
+  <script>
+    buildNav("index.html");
+    buildFooter();
+    document.getElementById("featuredGrid").innerHTML = getPets().slice(0, 4).map(petCard).join("");
+    setTimeout(function () {
+      const grid = document.getElementById("featuredGrid");
+      for (let i = 0; i < grid.children.length; i++) { grid.children[i].classList.add("reveal", "delay-" + (i % 4 + 1)); }
+      initReveal();
+    }, 60);
+
+    (function () {
+      var c = document.getElementById("heroFloats");
+      if (!c) { c = document.createElement("div"); c.id = "heroFloats"; c.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;overflow:visible"; document.body.appendChild(c); }
+      var emojis = ["🐶", "🐱", "🐦", "🐰", "❤️", "🐾", "🐕", "🐈", "🦜", "💖", "🐹", "🐣"];
+      if (window.matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+      function spawn() {
+        var el = document.createElement("span");
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.cssText = "position:fixed;bottom:-60px;font-size:" + (1.2 + Math.random() * 1.6) + "rem;left:" + Math.random() * 100 + "%;opacity:0;z-index:5;pointer-events:none;filter:drop-shadow(0 0 6px rgba(139,92,246,.3))";
+        c.appendChild(el);
+        var d = 6 + Math.random() * 6;
+        el.animate([
+          { transform: "translateY(0) translateX(0) rotate(0deg)", opacity: 0 },
+          { opacity: 0.85, offset: 0.08 },
+          { transform: "translateY(-50vh) translateX(30px) rotate(15deg)", opacity: 0.7, offset: 0.5 },
+          { opacity: 0.5, offset: 0.9 },
+          { transform: "translateY(-110vh) translateX(-20px) rotate(-10deg)", opacity: 0 }
+        ], { duration: d * 1000, easing: "linear" });
+        setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, (d + 1) * 1000);
+      }
+      for (var i = 0; i < 8; i++) { setTimeout(spawn, i * 400); }
+      setInterval(spawn, 1200);
+    })();
+  </script>
+
+
+  <!-- Chatbot Widget -->
+  <button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbot()" title="Chat with PawBot">🐾<span
+      class="badge-dot"></span></button>
+  <div class="chatbot-window" id="chatbotWindow">
+    <div class="chatbot-head">
+      <div class="avatar">🐾</div>
+      <div class="info">
+        <h4>PawBot</h4>
+        <span class="status">Online • Typically replies instantly</span>
+      </div>
+      <button class="close-btn" onclick="toggleChatbot()">×</button>
+    </div>
+    <div class="chatbot-body" id="chatbotBody"></div>
+    <div class="chatbot-input">
+      <input type="text" id="chatbotInput" placeholder="Ask me anything about pets..." autocomplete="off">
+      <button onclick="sendChatMessage()">➤</button>
+    </div>
+  </div>
+  <script>
+    window.addEventListener("load", function () {
+      var e = ["🐶", "🐱", "🐦", "🐰", "❤️", "🐾", "🐕", "🐈", "🦜", "💖", "🐹", "🐣"];
+      function s() {
+        var el = document.createElement("div");
+        el.textContent = e[Math.floor(Math.random() * e.length)];
+        el.style.cssText = "position:fixed;bottom:-60px;font-size:" + (1.2 + Math.random() * 1.6) + "rem;left:" + Math.random() * 100 + "%;opacity:0;z-index:9999;pointer-events:none";
+        document.body.appendChild(el);
+        var d = 6000 + Math.random() * 6000;
+        el.animate([
+          { transform: "translateY(0) rotate(0)", opacity: 0 },
+          { opacity: 0.85, offset: 0.1 },
+          { transform: "translateY(-50vh) rotate(15deg)", opacity: 0.7, offset: 0.5 },
+          { opacity: 0.3, offset: 0.9 },
+          { transform: "translateY(-110vh) rotate(-10deg)", opacity: 0 }
+        ], { duration: d, easing: "linear" });
+        setTimeout(function () { el.remove(); }, d + 1000);
+      }
+      for (var i = 0; i < 8; i++) { setTimeout(s, i * 400); }
+      setInterval(s, 1200);
+    });
+  </script>
+
+</body>
+
+</html>

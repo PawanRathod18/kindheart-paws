@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — KindHeart Paws</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <header></header>
+
+  <section class="hero" style="padding:50px 0">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin:0">
+        <p class="eyebrow">Our story</p>
+        <h1>About <span class="gradient-text">KindHeart Paws</span></h1>
+        <p>On a mission to give every pet a loving home and every pet parent a trusted partner.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap about-grid">
+      <div class="reveal from-left">
+        <h2 style="color:var(--secondary);margin-bottom:14px">More Than a Platform — A Family 🐾</h2>
+        <p style="color:#4b5563;margin-bottom:14px">KindHeart Paws began with a simple idea: make pet adoption and care
+          easy, transparent, and kind. We connect shelters, breeders, and individuals with families looking for a furry
+          companion, while also offering professional services like grooming, training, boarding, and veterinary care.
+        </p>
+        <p style="color:#4b5563;margin-bottom:14px">Every listing on our platform is created by real people. Every
+          enquiry is handled with care. And every service is delivered by verified, compassionate professionals who
+          treat your pet like their own.</p>
+        <p style="color:#4b5563">Whether you're adopting your first pet, finding a new home for one, or just need a
+          trusted groomer — we're here for the whole journey.</p>
+      </div>
+      <img class="reveal from-right" src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=800"
+        alt="Person with dog" onerror="this.src='https://placehold.co/600x380/2b6777/fff?text=Our+Story'">
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section style="background:linear-gradient(135deg,#fff7f3,#eef9f4)">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">What we stand for</p>
+        <h2>Our Values</h2>
+      </div>
+      <div class="svc-grid">
+        <div class="svc-card reveal delay-1">
+          <div class="ico">❤</div>
+          <h3>Compassion First</h3>
+          <p>Every decision we make puts the wellbeing of pets and their humans at the center.</p>
+        </div>
+        <div class="svc-card reveal delay-2">
+          <div class="ico">🔍</div>
+          <h3>Transparency</h3>
+          <p>Clear listings, honest pricing, and verified sellers — no hidden surprises.</p>
+        </div>
+        <div class="svc-card reveal delay-3">
+          <div class="ico">🤝</div>
+          <h3>Community</h3>
+          <p>We build a trusted network of pet lovers, shelters, and service providers.</p>
+        </div>
+        <div class="svc-card reveal delay-4">
+          <div class="ico">🌿</div>
+          <h3>Responsibility</h3>
+          <p>We promote ethical adoption, sterilization, and responsible pet ownership.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Our impact</p>
+        <h2>By the Numbers</h2>
+      </div>
+      <div class="stats">
+        <div class="stat reveal delay-1">
+          <div class="num">500+</div>
+          <div class="lbl">Pets Adopted</div>
+        </div>
+        <div class="stat reveal delay-2">
+          <div class="num">1,200+</div>
+          <div class="lbl">Active Listings</div>
+        </div>
+        <div class="stat reveal delay-3">
+          <div class="num">8</div>
+          <div class="lbl">Services Offered</div>
+        </div>
+        <div class="stat reveal delay-4">
+          <div class="num">15k+</div>
+          <div class="lbl">Happy Pet Parents</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section style="background:linear-gradient(135deg,#fff7f3,#eef9f4)">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">The people behind it</p>
+        <h2>Meet the Team</h2>
+      </div>
+      <div class="svc-grid">
+        <div class="svc-card reveal delay-1" style="text-align:center">
+          <div
+            style="width:90px;height:90px;border-radius:50%;background:#fde; margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:2.5rem">
+            👨</div>
+          <h3 style="text-align:center">Pawan Rathod</h3>
+          <p style="text-align:center">Founder & CEO. Animal welfare advocate and lifelong rescue volunteer.</p>
+        </div>
+
+        <div class="svc-card reveal delay-3" style="text-align:center">
+          <div
+            style="width:90px;height:90px;border-radius:50%;background:#dcfce7; margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:2.5rem">
+            👩‍🦱</div>
+          <h3 style="text-align:center">Prayas Rathod</h3>
+          <p style="text-align:center">Head of Grooming & Training. Certified groomer and canine behaviorist.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer></footer>
+
+  <!-- Cart Drawer -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-head">
+      <span>🛒 Your Cart</span>
+      <button class="modal-close" onclick="closeCart()"
+        style="position:static;font-size:1.5rem;background:none;border:none;cursor:pointer">×</button>
+    </div>
+    <div class="cart-body" id="cartBody"></div>
+    <div class="cart-foot" id="cartFoot">
+      <div class="cart-total"><span>Total</span><span class="amt" id="cartTotalAmt">₹0</span></div>
+      <button class="btn btn-primary checkout-btn" onclick="openCheckout()">Checkout</button>
+    </div>
+  </div>
+  <script src="js/script.js"></script>
+  <script>
+    buildNav("about.html");
+    buildFooter();
+  </script>
+
+  <!-- Chatbot Widget -->
+  <button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbot()" title="Chat with PawBot">🐾<span
+      class="badge-dot"></span></button>
+  <div class="chatbot-window" id="chatbotWindow">
+    <div class="chatbot-head">
+      <div class="avatar">🐾</div>
+      <div class="info">
+        <h4>PawBot</h4>
+        <span class="status">Online • Typically replies instantly</span>
+      </div>
+      <button class="close-btn" onclick="toggleChatbot()">×</button>
+    </div>
+    <div class="chatbot-body" id="chatbotBody"></div>
+    <div class="chatbot-input">
+      <input type="text" id="chatbotInput" placeholder="Ask me anything about pets..." autocomplete="off">
+      <button onclick="sendChatMessage()">➤</button>
+    </div>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sell a Pet — KindHeart Paws</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header></header>
+
+<section class="hero" style="padding:50px 0">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin:0">
+      <p class="eyebrow">List your pet</p>
+      <h1>Sell or Put Up for <span class="gradient-text">Adoption</span></h1>
+      <p>Reach thousands of loving families. Fill in the details below to list your pet.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap sell-wrap">
+    <!-- Form -->
+    <div class="sell-form-card reveal from-left">
+      <h3>📋 Pet Details</h3>
+      <div id="sellAlert"></div>
+      <form id="sellForm">
+        <div class="field-row">
+          <div class="form-group"><label>Pet Name</label><input type="text" id="pName" required placeholder="e.g. Bruno"></div>
+          <div class="form-group"><label>Type</label>
+            <select id="pType" required>
+              <option>Dog</option><option>Cat</option><option>Bird</option><option>Fish</option><option>Rabbit</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="form-group"><label>Breed</label><input type="text" id="pBreed" required placeholder="e.g. Labrador"></div>
+          <div class="form-group"><label>Age</label><input type="text" id="pAge" required placeholder="e.g. 2 years"></div>
+        </div>
+        <div class="field-row">
+          <div class="form-group"><label>Gender</label>
+            <select id="pGender"><option>Male</option><option>Female</option><option>-</option></select>
+          </div>
+          <div class="form-group"><label>Price (₹) — put 0 for free adoption</label><input type="number" id="pPrice" min="0" value="0" required></div>
+        </div>
+        <div class="form-group"><label>Tags (comma separated)</label><input type="text" id="pTags" placeholder="Vaccinated, Friendly, Trained"></div>
+        <div class="form-group"><label>Location</label><input type="text" id="pLoc" placeholder="e.g. Bengaluru"></div>
+        <div class="form-group"><label>Image URL (optional)</label><input type="text" id="pImg" placeholder="https://... (leave blank for default)"></div>
+        <div class="form-group"><label>Description</label><textarea id="pDesc" placeholder="Tell us a bit about your pet…"></textarea></div>
+        <button type="submit" class="btn btn-primary btn-block">List My Pet</button>
+      </form>
+    </div>
+
+    <!-- Live listings -->
+    <div class="reveal from-right">
+      <h3 style="color:var(--secondary);margin-bottom:18px">🏷️ Your Listings</h3>
+      <div class="listing-list" id="userListings"></div>
+    </div>
+  </div>
+</section>
+
+<footer></footer>
+
+<!-- Cart Drawer -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <span>🛒 Your Cart</span>
+    <button class="modal-close" onclick="closeCart()" style="position:static;font-size:1.5rem;background:none;border:none;cursor:pointer">×</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot" id="cartFoot">
+    <div class="cart-total"><span>Total</span><span class="amt" id="cartTotalAmt">₹0</span></div>
+    <button class="btn btn-primary checkout-btn" onclick="openCheckout()">Checkout</button>
+  </div>
+</div>
+<script src="js/script.js"></script>
+<script>
+buildNav("sell.html");
+buildFooter();
+
+function loadListings(){
+  const u=currentUser();
+  const all=getPets();
+  const mine=u ? all.filter(p=>p.sellerEmail===u.email) : [];
+  const box=document.getElementById("userListings");
+  if(mine.length===0){
+    box.innerHTML=`<div class="empty">You haven't listed any pets yet. Fill the form to get started! 🐾</div>`;
+    return;
+  }
+  box.innerHTML=mine.map(p=>`
+    <div class="mini-card">
+      <div class="pic">${emojiFor(p.type)}</div>
+      <div class="info">
+        <h4>${p.name} <span style="font-weight:400;color:var(--muted)">• ${p.breed}</span></h4>
+        <p>${p.price===0?"Free Adoption":("₹"+p.price.toLocaleString("en-IN"))} • ${p.location||"—"}</p>
+      </div>
+      <button class="del" onclick="deletePet(${p.id})">Remove</button>
+    </div>`).join("");
+}
+
+function emojiFor(t){
+  return {Dog:"🐕",Cat:"🐱",Bird:"🐦",Fish:"🐟",Rabbit:"🐰"}[t]||"🐾";
+}
+
+function deletePet(id){
+  let pets=getPets().filter(p=>p.id!==id);
+  setPets(pets);
+  toast("Listing removed.");
+  loadListings();
+}
+
+document.getElementById("sellForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  const u=currentUser();
+  if(!u){
+    document.getElementById("sellAlert").innerHTML=`<div class="alert err">Please login first to list a pet.</div>`;
+    setTimeout(()=>location.href="login.html",1500);
+    return;
+  }
+  const tags=document.getElementById("pTags").value.trim().split(",").map(t=>t.trim()).filter(Boolean);
+  const pets=getPets();
+  const newPet={
+    id:Date.now(),
+    name:document.getElementById("pName").value.trim(),
+    type:document.getElementById("pType").value,
+    breed:document.getElementById("pBreed").value.trim(),
+    age:document.getElementById("pAge").value.trim(),
+    gender:document.getElementById("pGender").value,
+    price:Number(document.getElementById("pPrice").value),
+    tags,
+    location:document.getElementById("pLoc").value.trim(),
+    img:document.getElementById("pImg").value.trim() || `https://placehold.co/600x400/ff7a59/fff?text=${document.getElementById("pName").value}`,
+    desc:document.getElementById("pDesc").value.trim(),
+    seller:u.name,
+    sellerEmail:u.email
+  };
+  pets.unshift(newPet);
+  setPets(pets);
+  this.reset();
+  document.getElementById("pPrice").value=0;
+  document.getElementById("sellAlert").innerHTML=`<div class="alert ok">🎉 "${newPet.name}" is now listed! <a href="pets.html" style="color:var(--primary)">View on Pets page</a></div>`;
+  toast("Pet listed successfully!");
+  loadListings();
+});
+
+loadListings();
+</script>
+
+<!-- Chatbot Widget -->
+<button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbot()" title="Chat with PawBot">🐾<span class="badge-dot"></span></button>
+<div class="chatbot-window" id="chatbotWindow">
+  <div class="chatbot-head">
+    <div class="avatar">🐾</div>
+    <div class="info">
+      <h4>PawBot</h4>
+      <span class="status">Online • Typically replies instantly</span>
+    </div>
+    <button class="close-btn" onclick="toggleChatbot()">×</button>
+  </div>
+  <div class="chatbot-body" id="chatbotBody"></div>
+  <div class="chatbot-input">
+    <input type="text" id="chatbotInput" placeholder="Ask me anything about pets..." autocomplete="off">
+    <button onclick="sendChatMessage()">➤</button>
+  </div>
+</div>
+
+</body>
+</html>
